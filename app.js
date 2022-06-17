@@ -1,9 +1,21 @@
+//importeer express
 const express = require('express');
-
+require("dotenv").config()
+//création de l'application express
 const app = express();
 
-app.use(express.json());
+const mongoose = require('mongoose');
+mongoose.connect(`${process.env.DB_URL}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URL_CLUSTER}`,
+    {
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    })
+    .then(() => console.log('Connexion à MongoDB réussie !'))
+    .catch(() => console.log('Connexion à MongoDB échouée !'));
 
+
+app.use(express.json());
+//definition des headers pour le CORS
 app.use((req, res, next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content, Accept, Content-Type, Authorization');
@@ -20,7 +32,8 @@ app.post('/api/stuff', (req, res, next) => {
     });
 });
 
-
+//on rajoute l'url visée par l'application(la route)
+//l'application frontend va faire une requête
 app.get('/api/stuff', (req, res, next) => {
     const stuff = [
         {
@@ -52,5 +65,5 @@ app.get('/api/stuff', (req, res, next) => {
 
 
 
-
+//export de l application express pour que l'on puisse y accèder depuis les fichiers de notre projet et particulierement node.
 module.exports = app;
