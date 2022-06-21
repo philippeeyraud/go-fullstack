@@ -29,37 +29,6 @@ app.use((req, res, next) => {
 });
 
 
-//pour intercepter les req post
-app.post('/api/stuff', (req, res, next) => {
-    delete req.body._id;
-    const thing = new Thing({
-        ...req.body
-    });
-    //Enregistrer l'objet ds la base
-    thing.save()
-        .then(() => res.status(201).json({
-            message: 'Objet enregistré !'
-        }))
-        .catch(error => res.status(400).json({ error }));
-});
-//Trouver un seul objet par son identifiant
-
-app.get('/api/stuff/:id', (req, res, next) => {
-  Thing.findOne({ _id: req.params.id})  
-  .then(thing => res.status(200).json(thing))
-  .catch(error => res.status(404).json({ error}));
-});
-
-
-//on rajoute l'url visée par l'application(la route)
-//On va utiliser la methode find, on veut la liste complete des objets, on récupère le tableau des  things retournés  par la base de donnée et on les renvoie avec un code 200.
-app.get('/api/stuff', (req, res, next) => {
-    Thing.find()
-        .then(things => res.status(200).json(things))
-        .catch(error => res.status(400).json({ error }));
-
-
-});
 
 
 
