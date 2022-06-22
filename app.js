@@ -1,14 +1,12 @@
-//importeer express
+//importer express
 const express = require('express');
-
-const Thing = require('./models/Thing');
 require("dotenv").config()
-
 //création de l'application express
 const app = express();
-
 //Importation de mongoose et connection à mongoDB. Utilisation de .end pour permettre al'utilisateur de mettre ses propres info sans toucher au code.
 const mongoose = require('mongoose');
+const stuffRoutes = require('./routes/stuff');
+
 mongoose.connect(`${process.env.DB_URL}://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_URL_CLUSTER}`,
     {
         useNewUrlParser: true,
@@ -17,8 +15,6 @@ mongoose.connect(`${process.env.DB_URL}://${process.env.DB_USER}:${process.env.D
     .then(() => console.log('Connexion à MongoDB réussie !'))
     .catch(() => console.log('Connexion à MongoDB échouée !'));
 
-//Ce middelware intercepte toute les requêtes qui ont un content type json et met a disposition ce contenu sur l objet requete body
-app.use(express.json());
 
 //definition des headers pour le CORS(cross origin ressource share)
 app.use((req, res, next) => {
@@ -28,6 +24,9 @@ app.use((req, res, next) => {
     next();
 });
 
+//Ce middelware intercepte toute les requêtes qui ont un content type json et met a disposition ce contenu sur l objet requete body
+app.use(express.json());
+app.use('/api/stuff', stuffRoutes);
 
 
 
